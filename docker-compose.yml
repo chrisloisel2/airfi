@@ -69,23 +69,32 @@ services:
       airflow-init:
         condition: service_completed_successfully
 
-  # ─── Apache NiFi ─────────────────────────────────────────────────────────────
+  # ─── Apache NiFi (image custom avec Python + ffmpeg + scripts pipeline) ──────
   nifi:
-    image: apache/nifi:1.25.0
+    build:
+      context: ./nifi
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
     environment:
-      # Désactive HTTPS, active HTTP
+      # HTTP
       NIFI_WEB_HTTP_PORT: 8080
       NIFI_WEB_HTTP_HOST: 0.0.0.0
       NIFI_WEB_HTTPS_PORT: ""
       # Single-user auth
-      SINGLE_USER_CREDENTIALS_USERNAME: admin
-      SINGLE_USER_CREDENTIALS_PASSWORD: adminpassword123
+      SINGLE_USER_CREDENTIALS_USERNAME: ${NIFI_USERNAME:-admin}
+      SINGLE_USER_CREDENTIALS_PASSWORD: ${NIFI_PASSWORD:-adminpassword123}
+      # AWS — transmis aux scripts Python via ExecuteStreamCommand
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-eu-west-1}
     volumes:
       - nifi-conf:/opt/nifi/nifi-current/conf
       - nifi-logs:/opt/nifi/nifi-current/logs
       - nifi-data:/opt/nifi/nifi-current/data
+      # NAS local (bind-mount vers le dossier physique ou NFS)
+      # Remplacer ./data/nas par le vrai point de montage NFS en prod
+      - ./data/nas:/nas/physical_data
     restart: unless-stopped
 
 volumes:
