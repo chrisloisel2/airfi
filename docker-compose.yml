@@ -92,6 +92,7 @@ services:
       - nifi-conf:/opt/nifi/nifi-current/conf
       - nifi-logs:/opt/nifi/nifi-current/logs
       - nifi-data:/opt/nifi/nifi-current/data
+      - nifi/bin:/opt/physical-data-pipeline
       # NAS local (bind-mount vers le dossier physique ou NFS)
       # Remplacer ./data/nas par le vrai point de montage NFS en prod
       - ./data/nas:/nas/physical_data
