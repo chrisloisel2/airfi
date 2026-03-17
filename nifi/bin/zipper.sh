@@ -8,8 +8,8 @@ ssh "$NAS" 'bash -s' <<'EOF'
 set -Eeuo pipefail
 shopt -s nullglob
 
-ROOT_DIR="/srv/exoria/inbox/"
-QUEUE_DIR="/src/exoria/queu"
+ROOT_DIR="/srv/exoria/inbox/select"
+QUEUE_DIR="/srv/exoria/queu"
 OUT_DIR="/srv/exoria/inbox/hourly_archives"
 TMP_RAW_DIR="/tmp/exoria_sessions"
 LOCK_FILE="/var/lock/exoria_hourly_pipeline.lock"
